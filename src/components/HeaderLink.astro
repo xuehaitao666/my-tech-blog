@@ -4,9 +4,12 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+/** 统一去掉尾斜线再比较，兼容 GitHub Pages 子路径 */
+const norm = (p: string) => {
+	const t = p.replace(/\/$/u, '');
+	return t === '' ? '/' : t;
+};
+const isActive = norm(href) === norm(Astro.url.pathname);
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

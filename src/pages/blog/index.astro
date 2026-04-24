@@ -1,11 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import { withTrailingBase } from '../../lib/basePath';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { PAGE_BLOG_TITLE, SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const b = withTrailingBase();
+const listTitle = `${PAGE_BLOG_TITLE} — ${SITE_TITLE}`;
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -13,9 +17,9 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={listTitle} description={SITE_DESCRIPTION} />
 		<style>
 			main {
 				width: 960px;
@@ -94,7 +98,7 @@ const posts = (await getCollection('blog')).sort(
 					{
 						posts.map((post) => (
 							<li>
-								<a href={`/blog/${post.id}/`}>
+								<a href={`${b}blog/${post.id}/`}>
 									{post.data.heroImage && (
 										<Image width={720} height={360} src={post.data.heroImage} alt="" />
 									)}
