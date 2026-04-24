@@ -20,11 +20,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install, build, and upload
-        uses: withastro/action@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          path: .
           node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        # CI 与 GITHUB_REPOSITORY 在 Actions 里默认有，供 astro.config 的 site / base
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
   deploy:
     needs: build
